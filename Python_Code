@@ -1,0 +1,17 @@
+import cvzone
+import cv2
+from cvzone.HandTrackingModule import HandDetector
+from cvzone.SerialModule import SerialObject
+cap = cv2.VideoCapture(0)
+arduino = SerialObject("/dev/cu.usbserial-130")
+detector = HandDetector(maxHands=1)
+while True:
+    success, img = cap.read()
+    hands, img = detector.findHands(img)
+    if hands:
+        lmlist = hands[0]
+        figersup = detector.fingersUp(lmlist)
+        print(figersup)
+        arduino.sendData(figersup)
+    cv2.imshow("Image",img)
+    cv2.waitKey(1)
